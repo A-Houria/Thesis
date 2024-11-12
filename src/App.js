@@ -27,8 +27,7 @@ function App() {
 
     const B = calculateB(b0, h0);
 
-    const firstPart =
-      1 / (1 - deltaH / h0 + (3 * A) / Math.pow((2 * r) / 2 / h0, 3 / 4));
+    const firstPart = 1 / (1 - deltaH / h0 + (3 * A) / Math.pow(r / h0, 3 / 4));
 
     const secondPart = b0 / h0 / (1 + 0.57 * B);
 
