@@ -1,0 +1,92 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Helvetica, sans-serif;
+  transition: all 0.2s ease-in;
+}
+
+body {
+  background-color: #f4f4f4;
+}
+
+.app .cont {
+  width: 90%;
+  margin: 50px auto;
+  padding: 50px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid black;
+  border-radius: 5px;
+}
+.app .cont h1 {
+  letter-spacing: 3px;
+  font-size: 42px;
+  font-weight: 400;
+  margin-bottom: 50px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  color: rgb(95, 95, 95);
+}
+.app .cont .inputs {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.app .cont .inputs p {
+  margin: 15px 0px;
+  background-color: #f4f4f4;
+  width: 100%;
+  padding: 15px;
+  border-bottom: 3px solid rgb(95, 95, 95);
+  color: rgb(95, 95, 95);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 2px;
+}
+.app .cont .inputs p:hover {
+  border-bottom: 3px solid lightblue;
+  cursor: text;
+}
+.app .cont .inputs input {
+  margin: 15px 0px;
+  outline: none;
+  border: none;
+  background-color: #f4f4f4;
+  color: rgb(95, 95, 95);
+  border-bottom: 3px solid rgb(95, 95, 95);
+  height: 50px;
+  width: 300px;
+  padding: 10px 15px;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  border-radius: 3px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.app .cont .inputs input:hover {
+  border-bottom: 3px solid lightblue;
+}
+.app .cont .inputs input::-webkit-outer-spin-button, .app .cont .inputs input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.app .cont .inputs input.btn {
+  background-color: #f4f4f4;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: grey;
+}
+.app .cont .inputs input.btn:hover {
+  cursor: pointer;
+}/*# sourceMappingURL=style.css.map */
