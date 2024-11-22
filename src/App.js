@@ -3,31 +3,16 @@ import React, { useState } from "react";
 function App() {
   const [numPasses, setNumPasses] = useState(null);
   const [tempPasses, setTempPasses] = useState("");
-  const [r, setR] = useState("");
   const [passes, setPasses] = useState([]);
-  const [currentPass, setCurrentPass] = useState(1);
-  const [b0, setB0] = useState("");
-  const [h0, setH0] = useState("");
-  const [h1, setH1] = useState("");
+  const [error, setError] = useState("");
 
-  // Calculate A
-  const calculateA = (h0, deltaH) => {
-    return (
-      (1 + 5 * Math.pow(0.35 - deltaH / h0, 2)) * Math.sqrt(h0 / deltaH - 1)
-    );
-  };
-
-  // Calculate B
-  const calculateB = (b0, h0) => {
-    return (b0 / h0 - 1) * Math.pow(b0 / h0, 2 / 3);
-  };
-
-  // Calculate b1
+  // B1 calculation
   const calculateB1 = (b0, h0, h1, r) => {
     const deltaH = h0 - h1;
 
-    const A = calculateA(h0, deltaH);
-    const B = calculateB(b0, h0);
+    const A =
+      (1 + 5 * Math.pow(0.35 - deltaH / h0, 2)) * Math.sqrt(h0 / deltaH - 1);
+    const B = (b0 / h0 - 1) * Math.pow(b0 / h0, 2 / 3);
 
     const firstPart =
       1 / (1 - deltaH / h0 + (3 * A) / Math.pow(2 * ((0.5 * r) / h0), 3 / 4));
@@ -36,42 +21,111 @@ function App() {
 
     const b1 = b0 + (h0 - h1) * firstPart * secondPart;
 
-    return b1;
+    return b1.toFixed(2);
   };
 
-  // Start simulation by setting the number of passes and roll radius
+  // Alpha_0 calculation
+  const calculateAlpha0 = (h0, h1, r) => {
+    if (!h0 || !h1 || !r || h0 <= h1 || r <= 0) return "";
+    const alpha0 = Math.acos(1 - (h0 - h1) / r) * (180 / Math.PI);
+    return alpha0.toFixed(2);
+  };
+
+  // start simulation function handling
   const startSimulation = (e) => {
     e.preventDefault();
-    setNumPasses(parseInt(tempPasses, 10)); // Set number of passes
-    setTempPasses(""); // Clear temporary input
+    const initialPasses = Array.from(
+      { length: parseInt(tempPasses, 10) },
+      (_, i) => ({
+        pass: i + 1,
+        h0: "",
+        b0: "",
+        h1: "",
+        b1: "",
+        r: "",
+        alpha0: "",
+        rotated: false,
+      })
+    );
+    setPasses(initialPasses);
+    setNumPasses(parseInt(tempPasses, 10));
+    setTempPasses("");
   };
 
-  // Handle each pass submission
-  const handlePassSubmit = (e) => {
-    e.preventDefault();
+  // function for table cells change handling
+  const handleCellChange = (value, rowIndex, columnName) => {
+    const updatedPasses = [...passes];
+    const currentRow = updatedPasses[rowIndex];
+    const prevRow = updatedPasses[rowIndex - 1] || null;
 
-    const b0Num = parseFloat(b0);
-    const h0Num = parseFloat(h0);
-    const h1Num = parseFloat(h1);
-    const rNum = parseFloat(r);
+    if (columnName === "h0" && rowIndex > 0 && value > prevRow.h1) {
+      setError(`H0 cannot be greater than the previous pass's H1`);
+      return;
+    }
 
-    const b1 = calculateB1(b0Num, h0Num, h1Num, rNum);
+    if (columnName === "h1" && value > currentRow.h0) {
+      setError(`H1 cannot be greater than H0`);
+      return;
+    }
 
-    // Add pass result to the table
-    const newPass = {
-      pass: currentPass,
-      h0: h0Num,
-      b0: b0Num,
-      h1: h1Num,
-      b1: b1.toFixed(2),
-    };
-    setPasses([...passes, newPass]);
+    setError("");
 
-    // Prepare for the next pass
-    setB0(b1.toFixed(2)); // New B0 is the B1 from this pass
-    setH0(h1Num); // New H0 is the H1 from this pass
-    setH1(""); // Clear input for next H1
-    setCurrentPass((prev) => prev + 1);
+    currentRow[columnName] = value;
+
+    //  dependent values recalculation after every previous value change
+    const { h0, h1, b0, r } = currentRow;
+    if (h0 && h1 && b0 && r && h0 > h1) {
+      currentRow.b1 = calculateB1(
+        parseFloat(b0),
+        parseFloat(h0),
+        parseFloat(h1),
+        parseFloat(r)
+      );
+      currentRow.alpha0 = calculateAlpha0(
+        parseFloat(h0),
+        parseFloat(h1),
+        parseFloat(r)
+      );
+    } else {
+      currentRow.b1 = "";
+      currentRow.alpha0 = "";
+    }
+
+    // Propagation for changes to next passes
+    for (let i = rowIndex + 1; i < updatedPasses.length; i++) {
+      const prev = updatedPasses[i - 1];
+      const curr = updatedPasses[i];
+      if (prev.h1 && prev.b1) {
+        curr.h0 = prev.h1;
+        curr.b0 = prev.b1;
+        curr.r = prev.r;
+      }
+    }
+    setPasses(updatedPasses);
+  };
+
+  // function for handling rotation radio button clicks
+  const handleRotation = (rowIndex) => {
+    const updatedPasses = [...passes];
+    updatedPasses.forEach((pass, i) => {
+      if (i === rowIndex) {
+        const rotated = !pass.rotated;
+        if (rotated) {
+          [pass.h0, pass.b0] = [pass.b0, pass.h0];
+          [pass.h1, pass.b1] = [pass.b1, pass.h1];
+        } else {
+          [pass.h0, pass.b0] = [pass.b0, pass.h0];
+          [pass.h1, pass.b1] = [pass.b1, pass.h1];
+        }
+        pass.rotated = rotated;
+      }
+      if (i > rowIndex) {
+        const prev = updatedPasses[i - 1];
+        pass.h0 = prev.h1;
+        pass.b0 = prev.b1;
+      }
+    });
+    setPasses(updatedPasses);
   };
 
   return (
@@ -93,114 +147,56 @@ function App() {
               />
             </label>
             <br />
-            <label>
-              Roll Radius (r):
-              <input
-                required
-                className="number"
-                type="number"
-                step="any"
-                min={0}
-                placeholder="Enter roll radius"
-                value={r}
-                onChange={(e) => setR(e.target.value)}
-              />
-            </label>
-            <br />
             <button type="submit">Start Simulation</button>
           </form>
-        ) : currentPass <= numPasses ? (
-          <form className="inputs" onSubmit={handlePassSubmit}>
-            <h1>Pass Schedule Simulation Tool</h1>
-            <label>
-              Initial Height (H0):
-              <input
-                required
-                className="number"
-                type="number"
-                step="any"
-                min={0}
-                placeholder="Enter H0"
-                value={h0}
-                onChange={(e) => setH0(e.target.value)}
-                disabled={currentPass > 1 || currentPass > numPasses} // Disable after first pass or simulation ends
-              />
-            </label>
-            <br />
-            <label>
-              Initial Width (B0):
-              <input
-                required
-                className="number"
-                type="number"
-                step="any"
-                min={0}
-                placeholder="Enter B0"
-                value={b0}
-                onChange={(e) => setB0(e.target.value)}
-                disabled={currentPass > 1 || currentPass > numPasses} // Disable after first pass or simulation ends
-              />
-            </label>
-            <br />
-            <label>
-              Resulted Height (H1):
-              <input
-                required
-                className="number"
-                type="number"
-                step="any"
-                min={0}
-                placeholder="Enter H1"
-                value={h1}
-                onChange={(e) => setH1(e.target.value)}
-                disabled={currentPass > numPasses} // Disable when simulation ends
-              />
-            </label>
-            <br />
-            <button type="submit" disabled={currentPass > numPasses}>
-              {currentPass > numPasses
-                ? "Simulation Complete"
-                : `Submit Pass ${currentPass}`}
-            </button>
-          </form>
         ) : (
-          <form className="inputs">
-            <h1>Pass Schedule Simulation Tool</h1>
-            <label>
-              Initial Height (H0):
-              <input className="number" type="number" value={h0} disabled />
-            </label>
-            <br />
-            <label>
-              Initial Width (B0):
-              <input className="number" type="number" value={b0} disabled />
-            </label>
-            <br />
-            <button type="button" disabled>
-              Simulation Complete
-            </button>
-          </form>
-        )}
-
-        {passes.length > 0 && (
           <div className="table">
-            <h1>Pass Results</h1>
+            <h1>Pass Schedule Simulation Tool</h1>
+            {error && <p style={{ color: "red" }}>{error}</p>}
             <table border="1">
               <thead>
                 <tr>
+                  <th>Rotate</th>
+                  <th>Pass</th>
                   <th>H0</th>
                   <th>B0</th>
                   <th>H1</th>
                   <th>B1</th>
+                  <th>Radius (r)</th>
+                  <th>Alpha_0</th>
                 </tr>
               </thead>
               <tbody>
-                {passes.map((pass) => (
-                  <tr key={pass.pass}>
-                    <td>{pass.h0}</td>
-                    <td>{pass.b0}</td>
-                    <td>{pass.h1}</td>
-                    <td>{pass.b1}</td>
+                {passes.map((pass, index) => (
+                  <tr key={index}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={pass.rotated || false}
+                        onChange={() => handleRotation(index)}
+                      />
+                    </td>
+                    <td>{pass.pass}</td>
+                    {["h0", "b0", "h1", "b1", "r"].map((column) => (
+                      <td key={column}>
+                        {column === "b1" ? (
+                          pass[column]
+                        ) : (
+                          <input
+                            type="number"
+                            value={pass[column]}
+                            onChange={(e) =>
+                              handleCellChange(
+                                parseFloat(e.target.value) || "",
+                                index,
+                                column
+                              )
+                            }
+                          />
+                        )}
+                      </td>
+                    ))}
+                    <td>{pass.alpha0}</td>
                   </tr>
                 ))}
               </tbody>

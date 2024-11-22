@@ -6,6 +6,18 @@
   transition: all 0.2s ease-in;
 }
 
+input[type="number"] {
+  -moz-appearance: textfield; // For Firefox
+  -webkit-appearance: none; // For Chrome, Safari, Edge
+  appearance: none; // For modern browsers
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0; // Optional: Removes any extra margin for Safari
+  }
+}
+
 body {
   background-color: #f4f4f4;
 }
@@ -22,10 +34,7 @@ body {
     justify-content: center;
     border: 3px solid black;
     border-radius: 5px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+
     h1 {
       letter-spacing: 3px;
       font-size: 42px;
@@ -40,10 +49,38 @@ body {
       flex-direction: column;
       align-items: center;
       text-align: start;
-      width: 30%;
+      width: 50%;
+
       h1 {
         text-align: center;
       }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        font-size: 16px;
+        letter-spacing: 2px;
+        input {
+          margin: 15px 0px;
+          outline: none;
+          border: none;
+          background-color: #f4f4f4;
+          border-bottom: 3px solid rgb(95, 95, 95);
+          height: 50px;
+          width: 300px;
+          padding: 10px 15px;
+          font-size: 12px;
+          letter-spacing: 2px;
+          border-radius: 3px;
+          user-select: none;
+          font-weight: 700;
+          text-transform: uppercase;
+          color: grey;
+          box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+      }
+
       button {
         margin: 15px 0px;
         outline: none;
@@ -78,71 +115,31 @@ body {
         font-size: 12px;
         font-weight: 400;
         letter-spacing: 2px;
+
         &:hover {
           border-bottom: 3px solid lightblue;
           cursor: text;
         }
       }
-      label {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        font-size: 12px;
-        font-weight: 400;
-        letter-spacing: 2px;
-        &:hover {
-          color: rgb(55, 193, 239);
-        }
-        input {
-          margin: 15px 0px;
-          outline: none;
-          border: none;
-          background-color: #f4f4f4;
-          color: rgb(95, 95, 95);
-          border-bottom: 3px solid rgb(95, 95, 95);
-          height: 50px;
-          width: 300px;
-          padding: 10px 15px;
-          font-size: 12px;
-          font-weight: 400;
-          letter-spacing: 2px;
-          border-radius: 3px;
-          user-select: none;
-          box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-
-          &:hover {
-            border-bottom: 3px solid lightblue;
-          }
-
-          &::-webkit-outer-spin-button,
-          &::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-          }
-
-          &.btn {
-            background-color: #f4f4f4;
-            user-select: none;
-            font-weight: 700;
-            font-size: 12px;
-            text-transform: uppercase;
-            color: grey;
-            &:hover {
-              cursor: pointer;
-            }
-          }
-        }
-      }
     }
+
     .table {
-      width: 30%;
+      width: 70%; // Expanded width to fit editable inputs better
+      margin: 20px auto;
+
       h1 {
-        margin: 15px;
+        margin: 35px;
         text-align: center;
       }
+
+      p {
+        margin: 10px 0px;
+        letter-spacing: 2px;
+        text-align: center;
+      }
+
       table {
         width: 100%;
-        margin: 20px auto;
         border-collapse: collapse;
         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 
@@ -163,17 +160,42 @@ body {
           color: #555;
         }
 
-        tr:nth-child(even) {
-          background-color: #f9f9f9;
-        }
+        tr {
+          &:nth-child(even) {
+            background-color: #f9f9f9;
+          }
 
-        tr:hover {
-          background-color: #f1f1f1;
-          transition: background-color 0.3s ease;
+          &:hover {
+            background-color: #f1f1f1;
+            transition: background-color 0.3s ease;
+          }
         }
 
         td {
           font-weight: 400;
+
+          input {
+            width: 100%;
+            border: none;
+            padding: 8px 10px;
+            text-align: center;
+            background-color: #f4f4f4;
+            border-bottom: 2px solid transparent;
+            outline: none;
+            font-size: 14px;
+            font-family: inherit;
+            color: #333;
+
+            &:hover {
+              border-bottom: 2px solid lightblue;
+            }
+
+            &:focus {
+              background-color: white;
+              border-bottom: 2px solid lightblue;
+              transition: all 0.3s ease;
+            }
+          }
         }
       }
     }
