@@ -1,203 +1,130 @@
-* {
+// Variables for consistency
+$primary-color: #007bff;
+$error-color: #ff4d4f;
+$table-border: 1px solid #ddd;
+$button-bg: #f5f5f5;
+$button-border: 1px solid #ccc;
+
+// removing the arrows from number inputs
+//Chrome, Safari, Edge, Opera
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Helvetica, sans-serif;
-  transition: all 0.2s ease-in;
 }
 
+// Firefox
 input[type="number"] {
-  -moz-appearance: textfield; // For Firefox
-  -webkit-appearance: none; // For Chrome, Safari, Edge
-  appearance: none; // For modern browsers
-
-  &::-webkit-inner-spin-button,
-  &::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0; // Optional: Removes any extra margin for Safari
-  }
+  -moz-appearance: textfield;
 }
 
-body {
-  background-color: #f4f4f4;
-}
-
+// Main app container
 .app {
-  .cont {
-    max-width: 90%;
-    margin: 50px auto;
-    padding: 50px;
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 3px solid black;
-    border-radius: 5px;
+  margin: 20px auto;
+  max-width: 100%;
+  padding: 0px 10%;
+  font-family: Arial, sans-serif;
 
-    h1 {
-      letter-spacing: 3px;
-      font-size: 42px;
-      font-weight: 400;
-      margin-bottom: 50px;
-      user-select: none;
-      color: rgb(95, 95, 95);
-    }
+  h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: $primary-color;
+  }
 
-    .inputs {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: start;
-      width: 50%;
+  // Error message styling
+  p {
+    color: $error-color;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 10px;
+  }
 
-      h1 {
-        text-align: center;
-      }
+  // Table container
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
 
-      label {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        font-size: 16px;
-        letter-spacing: 2px;
-        input {
-          margin: 15px 0px;
-          outline: none;
-          border: none;
-          background-color: #f4f4f4;
-          border-bottom: 3px solid rgb(95, 95, 95);
-          height: 50px;
-          width: 300px;
-          padding: 10px 15px;
-          font-size: 12px;
-          letter-spacing: 2px;
-          border-radius: 3px;
-          user-select: none;
-          font-weight: 700;
-          text-transform: uppercase;
-          color: grey;
-          box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-        }
-      }
-
-      button {
-        margin: 15px 0px;
-        outline: none;
-        border: none;
-        background-color: #f4f4f4;
-        border-bottom: 3px solid rgb(95, 95, 95);
-        height: 50px;
-        width: 300px;
-        padding: 10px 15px;
-        font-size: 12px;
-        letter-spacing: 2px;
-        border-radius: 3px;
-        user-select: none;
-        font-weight: 700;
-        text-transform: uppercase;
-        color: grey;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-
-        &:hover {
-          cursor: pointer;
-          border-bottom: 3px solid lightblue;
-        }
-      }
-
-      p {
-        margin: 15px 0px;
-        background-color: #f4f4f4;
-        width: 100%;
-        padding: 15px;
-        border-bottom: 3px solid rgb(95, 95, 95);
-        color: rgb(95, 95, 95);
-        font-size: 12px;
-        font-weight: 400;
-        letter-spacing: 2px;
-
-        &:hover {
-          border-bottom: 3px solid lightblue;
-          cursor: text;
-        }
-      }
-    }
-
-    .table {
-      width: 70%; // Expanded width to fit editable inputs better
-      margin: 20px auto;
-
-      h1 {
-        margin: 35px;
-        text-align: center;
-      }
-
-      p {
-        margin: 10px 0px;
-        letter-spacing: 2px;
-        text-align: center;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-
-        th,
-        td {
-          text-align: center;
-          padding: 15px;
-          border: 1px solid #ddd;
-          font-size: 14px;
-          color: #333;
-        }
-
+    thead {
+      tr {
         th {
-          background-color: #f4f4f4;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          color: #555;
+          padding: 10px;
+          background-color: #f9f9f9;
+          border: $table-border;
+          text-align: center;
         }
+      }
+    }
 
-        tr {
-          &:nth-child(even) {
-            background-color: #f9f9f9;
-          }
-
-          &:hover {
-            background-color: #f1f1f1;
-            transition: background-color 0.3s ease;
-          }
-        }
-
+    tbody {
+      tr {
         td {
-          font-weight: 400;
+          padding: 8px;
+          border: $table-border;
+          text-align: center;
 
-          input {
-            width: 100%;
-            border: none;
-            padding: 8px 10px;
-            text-align: center;
-            background-color: #f4f4f4;
-            border-bottom: 2px solid transparent;
-            outline: none;
-            font-size: 14px;
-            font-family: inherit;
-            color: #333;
-
-            &:hover {
-              border-bottom: 2px solid lightblue;
-            }
+          input[type="number"] {
+            width: 90%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9rem;
 
             &:focus {
+              border-color: $primary-color;
+              outline: none;
+            }
+          }
+
+          input[type="checkbox"] {
+            cursor: pointer;
+          }
+
+          button {
+            background-color: $button-bg;
+            border: none;
+            aspect-ratio: 1/1;
+            padding: 5px 10px;
+            font-size: 18px;
+            width: 35px;
+            cursor: pointer;
+            color: black;
+            background-color: white;
+            font-weight: 500;
+
+            &:hover {
+              color: red;
               background-color: white;
-              border-bottom: 2px solid lightblue;
-              transition: all 0.3s ease;
             }
           }
         }
       }
+    }
+  }
+
+  // Add pass button
+  button {
+    display: block;
+    margin: 0 auto;
+    padding: 8px 16px;
+    font-size: 24px;
+    border: $button-border;
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    background-color: white;
+    color: $primary-color;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $primary-color;
+      color: #fff;
+    }
+
+    &:disabled {
+      background-color: #e0e0e0;
+      color: #aaa;
+      cursor: not-allowed;
     }
   }
 }

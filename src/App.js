@@ -1,209 +1,219 @@
 import React, { useState } from "react";
 
+const MAX_PASSES = 50;
+
 function App() {
-  const [numPasses, setNumPasses] = useState(null);
-  const [tempPasses, setTempPasses] = useState("");
-  const [passes, setPasses] = useState([]);
+  const [passes, setPasses] = useState([
+    {
+      pass: 1,
+      h0: "",
+      b0: "",
+      h1: "",
+      b1: "",
+      r: "",
+      alpha0: "",
+      rotated: false,
+    },
+  ]);
   const [error, setError] = useState("");
 
-  // B1 calculation
+  // Helper functions
   const calculateB1 = (b0, h0, h1, r) => {
     const deltaH = h0 - h1;
-
     const A =
       (1 + 5 * Math.pow(0.35 - deltaH / h0, 2)) * Math.sqrt(h0 / deltaH - 1);
     const B = (b0 / h0 - 1) * Math.pow(b0 / h0, 2 / 3);
-
     const firstPart =
       1 / (1 - deltaH / h0 + (3 * A) / Math.pow(2 * ((0.5 * r) / h0), 3 / 4));
-
     const secondPart = b0 / h0 / (1 + 0.57 * B);
-
-    const b1 = b0 + (h0 - h1) * firstPart * secondPart;
-
-    return b1.toFixed(2);
+    return (b0 + (h0 - h1) * firstPart * secondPart).toFixed(2);
   };
 
-  // Alpha_0 calculation
   const calculateAlpha0 = (h0, h1, r) => {
     if (!h0 || !h1 || !r || h0 <= h1 || r <= 0) return "";
-    const alpha0 = Math.acos(1 - (h0 - h1) / r) * (180 / Math.PI);
-    return alpha0.toFixed(2);
+    return (Math.acos(1 - (h0 - h1) / r) * (180 / Math.PI)).toFixed(2);
   };
 
-  // start simulation function handling
-  const startSimulation = (e) => {
-    e.preventDefault();
-    const initialPasses = Array.from(
-      { length: parseInt(tempPasses, 10) },
-      (_, i) => ({
-        pass: i + 1,
-        h0: "",
-        b0: "",
-        h1: "",
-        b1: "",
-        r: "",
-        alpha0: "",
-        rotated: false,
-      })
-    );
-    setPasses(initialPasses);
-    setNumPasses(parseInt(tempPasses, 10));
-    setTempPasses("");
-  };
-
-  // function for table cells change handling
-  const handleCellChange = (value, rowIndex, columnName) => {
-    const updatedPasses = [...passes];
-    const currentRow = updatedPasses[rowIndex];
-    const prevRow = updatedPasses[rowIndex - 1] || null;
-
-    if (columnName === "h0" && rowIndex > 0 && value > prevRow.h1) {
-      setError(`H0 cannot be greater than the previous pass's H1`);
-      return;
-    }
-
-    if (columnName === "h1" && value > currentRow.h0) {
-      setError(`H1 cannot be greater than H0`);
-      return;
-    }
-
-    setError("");
-
-    currentRow[columnName] = value;
-
-    //  dependent values recalculation after every previous value change
-    const { h0, h1, b0, r } = currentRow;
+  const updateDependentValues = (index, updatedPasses) => {
+    const { h0, h1, b0, r } = updatedPasses[index];
     if (h0 && h1 && b0 && r && h0 > h1) {
-      currentRow.b1 = calculateB1(
+      updatedPasses[index].b1 = calculateB1(
         parseFloat(b0),
         parseFloat(h0),
         parseFloat(h1),
         parseFloat(r)
       );
-      currentRow.alpha0 = calculateAlpha0(
+      updatedPasses[index].alpha0 = calculateAlpha0(
         parseFloat(h0),
         parseFloat(h1),
         parseFloat(r)
       );
     } else {
-      currentRow.b1 = "";
-      currentRow.alpha0 = "";
+      updatedPasses[index].b1 = "";
+      updatedPasses[index].alpha0 = "";
     }
+    return updatedPasses;
+  };
 
-    // Propagation for changes to next passes
-    for (let i = rowIndex + 1; i < updatedPasses.length; i++) {
-      const prev = updatedPasses[i - 1];
-      const curr = updatedPasses[i];
-      if (prev.h1 && prev.b1) {
-        curr.h0 = prev.h1;
-        curr.b0 = prev.b1;
-        curr.r = prev.r;
-      }
-    }
+  // Add a new pass
+  const addPass = () => {
+    if (passes.length >= MAX_PASSES) return;
+
+    const newPass = {
+      pass: passes.length + 1,
+      h0: passes[passes.length - 1].h1 || "",
+      b0: passes[passes.length - 1].b1 || "",
+      h1: "",
+      b1: "",
+      r: passes[passes.length - 1].r || "",
+      alpha0: "",
+      rotated: false,
+    };
+
+    const updatedPasses = [...passes, newPass];
+    setPasses(updatedPasses);
+    updateDependentValuesForAll(updatedPasses); // Ensure calculations are done for the new pass
+  };
+
+  // Remove a pass
+  const removePass = (index) => {
+    if (index === 0) return; // Prevent removal of the first pass
+    const updatedPasses = passes
+      .filter((_, i) => i !== index)
+      .map((pass, i) => ({ ...pass, pass: i + 1 }));
+    setPasses(updatedPasses);
+    updateDependentValuesForAll(updatedPasses); // Ensure calculations are done
+  };
+
+  // Update dependent values for all passes
+  const updateDependentValuesForAll = (updatedPasses) => {
+    updatedPasses.forEach((_, index) => {
+      updateDependentValues(index, updatedPasses);
+    });
     setPasses(updatedPasses);
   };
 
-  // function for handling rotation radio button clicks
-  const handleRotation = (rowIndex) => {
+  // Handle cell value changes
+  const handleCellChange = (value, index, column) => {
     const updatedPasses = [...passes];
-    updatedPasses.forEach((pass, i) => {
-      if (i === rowIndex) {
-        const rotated = !pass.rotated;
-        if (rotated) {
-          [pass.h0, pass.b0] = [pass.b0, pass.h0];
-          [pass.h1, pass.b1] = [pass.b1, pass.h1];
-        } else {
-          [pass.h0, pass.b0] = [pass.b0, pass.h0];
-          [pass.h1, pass.b1] = [pass.b1, pass.h1];
-        }
-        pass.rotated = rotated;
-      }
-      if (i > rowIndex) {
-        const prev = updatedPasses[i - 1];
-        pass.h0 = prev.h1;
-        pass.b0 = prev.b1;
-      }
-    });
+    const currentPass = updatedPasses[index];
+    const prevPass = updatedPasses[index - 1] || null;
+
+    if (column === "h0" && index > 0 && value > prevPass.h1) {
+      setError(`H0 cannot be greater than the previous pass's H1`);
+      return;
+    }
+
+    if (column === "h1" && value > currentPass.h0) {
+      setError(`H1 cannot be greater than H0`);
+      return;
+    }
+
+    setError("");
+    currentPass[column] = value;
+    updateDependentValues(index, updatedPasses);
+
+    // Update subsequent passes
+    for (let i = index + 1; i < updatedPasses.length; i++) {
+      const prev = updatedPasses[i - 1];
+      updatedPasses[i].h0 = prev.h1 || "";
+      updatedPasses[i].b0 = prev.b1 || "";
+      updatedPasses[i].r = prev.r || "";
+      updateDependentValues(i, updatedPasses);
+    }
+
+    setPasses(updatedPasses);
+  };
+
+  // Handle rotation
+  const handleRotation = (index) => {
+    const updatedPasses = [...passes];
+    const currentPass = updatedPasses[index];
+    const rotated = !currentPass.rotated;
+
+    if (rotated) {
+      [currentPass.h0, currentPass.b0] = [currentPass.b0, currentPass.h0];
+      [currentPass.h1, currentPass.b1] = [currentPass.b1, currentPass.h1];
+    } else {
+      [currentPass.h0, currentPass.b0] = [currentPass.b0, currentPass.h0];
+      [currentPass.h1, currentPass.b1] = [currentPass.b1, currentPass.h1];
+    }
+
+    currentPass.rotated = rotated;
+    updateDependentValues(index, updatedPasses);
     setPasses(updatedPasses);
   };
 
   return (
     <div className="app">
-      <div className="cont">
-        {!numPasses ? (
-          <form className="inputs" onSubmit={startSimulation}>
-            <h1>Pass Schedule Simulation Tool</h1>
-            <label>
-              Number of Passes:
-              <input
-                required
-                className="number"
-                type="number"
-                min={1}
-                placeholder="Enter number of passes"
-                value={tempPasses}
-                onChange={(e) => setTempPasses(e.target.value)}
-              />
-            </label>
-            <br />
-            <button type="submit">Start Simulation</button>
-          </form>
-        ) : (
-          <div className="table">
-            <h1>Pass Schedule Simulation Tool</h1>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            <table border="1">
-              <thead>
-                <tr>
-                  <th>Rotate</th>
-                  <th>Pass</th>
-                  <th>H0</th>
-                  <th>B0</th>
-                  <th>H1</th>
-                  <th>B1</th>
-                  <th>Radius (r)</th>
-                  <th>Alpha_0</th>
-                </tr>
-              </thead>
-              <tbody>
-                {passes.map((pass, index) => (
-                  <tr key={index}>
-                    <td>
-                      <input
-                        type="checkbox"
-                        checked={pass.rotated || false}
-                        onChange={() => handleRotation(index)}
-                      />
-                    </td>
-                    <td>{pass.pass}</td>
-                    {["h0", "b0", "h1", "b1", "r"].map((column) => (
-                      <td key={column}>
-                        {column === "b1" ? (
-                          pass[column]
-                        ) : (
-                          <input
-                            type="number"
-                            value={pass[column]}
-                            onChange={(e) =>
-                              handleCellChange(
-                                parseFloat(e.target.value) || "",
-                                index,
-                                column
-                              )
-                            }
-                          />
-                        )}
-                      </td>
-                    ))}
-                    <td>{pass.alpha0}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+      <h1>Pass Schedule Simulation Tool</h1>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Rotate</th>
+            <th>Pass</th>
+            <th>H0</th>
+            <th>B0</th>
+            <th>H1</th>
+            <th>B1</th>
+            <th>Radius (r)</th>
+            <th>Alpha_0</th>
+            <th>Ratio B1 / H1</th>
+            <th>Remove</th>
+          </tr>
+        </thead>
+        <tbody>
+          {passes.map((pass, index) => (
+            <tr key={index}>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={pass.rotated || false}
+                  onChange={() => (index === 0 ? null : handleRotation(index))}
+                  disabled={index === 0} // Disable rotate for the first pass
+                />
+              </td>
+              <td>{pass.pass}</td>
+              {["h0", "b0", "h1", "b1", "r"].map((col) => (
+                <td key={col}>
+                  {col === "b1" ? (
+                    pass[col]
+                  ) : (
+                    <input
+                      type="number"
+                      value={pass[col]}
+                      onChange={(e) =>
+                        handleCellChange(
+                          parseFloat(e.target.value) || "",
+                          index,
+                          col
+                        )
+                      }
+                      min="0" // Ensures that the minimum value is 0
+                      step="any" // Allows decimal input
+                    />
+                  )}
+                </td>
+              ))}
+              <td>{pass.alpha0}</td>
+              <td>{(parseFloat(pass.b1) / parseFloat(pass.h1)).toFixed(2)}</td>
+              <td>
+                <button
+                  onClick={() => removePass(index)}
+                  disabled={index === 0}>
+                  -
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {passes.length < MAX_PASSES && (
+        <button onClick={addPass} style={{ marginTop: "10px" }}>
+          +
+        </button>
+      )}
     </div>
   );
 }
