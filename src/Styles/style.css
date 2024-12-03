@@ -1,95 +1,102 @@
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: all 0.3s ease-in-out;
 }
 
-input[type=number] {
-  -moz-appearance: textfield;
-}
-
-.app {
-  margin: 20px auto;
-  max-width: 100%;
-  padding: 0px 10%;
+div {
   font-family: Arial, sans-serif;
+  margin: 20px;
 }
-.app h1 {
+
+h1 {
   text-align: center;
-  font-size: 1.8rem;
+  font-size: 2rem;
+  color: #333;
   margin-bottom: 20px;
-  color: #007bff;
 }
-.app p {
-  color: #ff4d4f;
-  font-size: 0.9rem;
+
+div[style*="color: red"] {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 20px;
   text-align: center;
-  margin-bottom: 10px;
 }
-.app table {
+
+table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
 }
-.app table thead tr th {
+table th, table td {
   padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+table tr:nth-child(even) {
   background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  text-align: center;
 }
-.app table tbody tr td {
+table tr:hover {
+  background-color: #eaeaea;
+}
+
+input[type=number] {
+  width: 80%;
   padding: 8px;
-  border: 1px solid #ddd;
-  text-align: center;
-}
-.app table tbody tr td input[type=number] {
-  width: 90%;
-  padding: 5px;
+  margin: 5px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 0.9rem;
+  text-align: center;
+  font-size: 14px;
 }
-.app table tbody tr td input[type=number]:focus {
-  border-color: #007bff;
+input[type=number]:focus {
+  border-color: #0056b3;
   outline: none;
 }
-.app table tbody tr td input[type=checkbox] {
-  cursor: pointer;
-}
-.app table tbody tr td button {
-  background-color: #f5f5f5;
+
+button {
+  padding: 20px 25px;
+  margin: 5px;
   border: none;
-  aspect-ratio: 1/1;
-  padding: 5px 10px;
-  font-size: 18px;
-  width: 35px;
-  cursor: pointer;
+  border-radius: 4px;
+  background-color: #f2f2f2;
   color: black;
-  background-color: white;
-  font-weight: 500;
-}
-.app table tbody tr td button:hover {
-  color: red;
-  background-color: white;
-}
-.app button {
-  display: block;
-  margin: 0 auto;
-  padding: 8px 16px;
-  font-size: 24px;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  aspect-ratio: 1/1;
-  background-color: white;
-  color: #007bff;
+  font-size: 14px;
   cursor: pointer;
 }
-.app button:hover {
-  background-color: #007bff;
-  color: #fff;
+button img {
+  max-width: 25px;
 }
-.app button:disabled {
-  background-color: #e0e0e0;
-  color: #aaa;
-  cursor: not-allowed;
+button.removepass {
+  padding: 8px 12px;
+  margin: 5px;
+}
+button.removepass:hover {
+  background-color: red;
+}
+button:hover {
+  background-color: rgb(0, 255, 0);
+}
+button:focus {
+  outline: none;
+}
+
+button + button {
+  margin-left: 10px;
+}
+
+button,
+button + button {
+  margin-top: 10px;
+}
+
+.add-pass-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }/*# sourceMappingURL=style.css.map */

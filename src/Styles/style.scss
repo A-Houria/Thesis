@@ -1,130 +1,121 @@
-// Variables for consistency
-$primary-color: #007bff;
-$error-color: #ff4d4f;
-$table-border: 1px solid #ddd;
-$button-bg: #f5f5f5;
-$button-border: 1px solid #ccc;
-
-// removing the arrows from number inputs
-//Chrome, Safari, Edge, Opera
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
+*{
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: all .3s ease-in-out;
 }
 
-// Firefox
-input[type="number"] {
-  -moz-appearance: textfield;
-}
-
-// Main app container
-.app {
-  margin: 20px auto;
-  max-width: 100%;
-  padding: 0px 10%;
+// Main container
+div {
   font-family: Arial, sans-serif;
+  margin: 20px;
+}
 
-  h1 {
+// Title
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+// Error message styling
+div[style*="color: red"] {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+// Table styling
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  
+  th, td {
+    padding: 10px;
     text-align: center;
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    color: $primary-color;
+    border: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
   }
 
-  // Error message styling
-  p {
-    color: $error-color;
-    font-size: 0.9rem;
-    text-align: center;
-    margin-bottom: 10px;
+  tr:hover {
+    background-color: #eaeaea;
+  }
+}
+
+// Table input styling
+input[type="number"] {
+  width: 80%;
+  padding: 8px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+
+  &:focus {
+    border-color: #0056b3;
+    outline: none;
+  }
+}
+
+// Button styling
+button {
+  padding: 20px 25px;
+  margin: 5px;
+  border: none;
+  border-radius: 4px;
+  background-color: #f2f2f2;
+  color: black;
+  font-size: 14px;
+  cursor: pointer;
+
+  img{
+    max-width: 25px;
   }
 
-  // Table container
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-
-    thead {
-      tr {
-        th {
-          padding: 10px;
-          background-color: #f9f9f9;
-          border: $table-border;
-          text-align: center;
-        }
-      }
-    }
-
-    tbody {
-      tr {
-        td {
-          padding: 8px;
-          border: $table-border;
-          text-align: center;
-
-          input[type="number"] {
-            width: 90%;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 0.9rem;
-
-            &:focus {
-              border-color: $primary-color;
-              outline: none;
-            }
-          }
-
-          input[type="checkbox"] {
-            cursor: pointer;
-          }
-
-          button {
-            background-color: $button-bg;
-            border: none;
-            aspect-ratio: 1/1;
-            padding: 5px 10px;
-            font-size: 18px;
-            width: 35px;
-            cursor: pointer;
-            color: black;
-            background-color: white;
-            font-weight: 500;
-
-            &:hover {
-              color: red;
-              background-color: white;
-            }
-          }
-        }
-      }
+  &.removepass{
+    padding: 8px 12px;
+    margin: 5px;
+    &:hover{
+      background-color: red;
     }
   }
 
-  // Add pass button
-  button {
-    display: block;
-    margin: 0 auto;
-    padding: 8px 16px;
-    font-size: 24px;
-    border: $button-border;
-    border-radius: 50%;
-    aspect-ratio: 1/1;
-    background-color: white;
-    color: $primary-color;
-    cursor: pointer;
-
-    &:hover {
-      background-color: $primary-color;
-      color: #fff;
-    }
-
-    &:disabled {
-      background-color: #e0e0e0;
-      color: #aaa;
-      cursor: not-allowed;
-    }
+  &:hover {
+    background-color: rgb(0, 255, 0);
   }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+
+// Style for the container around buttons
+button + button {
+  margin-left: 10px;
+}
+
+// General margin adjustments for buttons
+button,
+button + button {
+  margin-top: 10px;
+}
+
+// Add Pass button and table adjustments
+.add-pass-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
