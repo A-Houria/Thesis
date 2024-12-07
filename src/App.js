@@ -17,34 +17,34 @@ function App() {
       b0: "",
       h1: "",
       b1: "",
-      r: "",
+      dN: "",
       n: "",
       alpha0: "",
       Kfm: "",
-      p_: "", // Add p_ here
+      p_: "", 
       F: "",
       rotated: false,
     },
   ]);
   const [error, setError] = useState("");
 
-  // Calculation Functions
-  const calculateB1 = (b0, h0, h1, r) => {
+  //--------------------Calculation Functions---------------------------//
+  const calculateB1 = (b0, h0, h1, R) => {
     const deltaH = h0 - h1;
-    if (deltaH <= 0 || !b0 || !h0 || !h1 || !r) return "";
+    if (deltaH <= 0 || !b0 || !h0 || !h1 || !R) return "";
     const A =
-      (1 + 5 * Math.pow(0.35 - deltaH / h0, 2)) * Math.sqrt(h0 / deltaH - 1);
+        (1 + 5 * Math.pow(0.35 - deltaH / h0, 2)) * Math.sqrt(h0 / deltaH - 1);
     const B = (b0 / h0 - 1) * Math.pow(b0 / h0, 2 / 3);
     const firstPart =
-      1 / (1 - deltaH / h0 + (3 * A) / Math.pow(2 * ((0.5 * r) / h0), 3 / 4));
+        1 / (1 - deltaH / h0 + (3 * A) / Math.pow(2 * (R / h0), 3 / 4));
     const secondPart = b0 / h0 / (1 + 0.57 * B);
     return (b0 + (h0 - h1) * firstPart * secondPart).toFixed(2);
-  };
+};
 
-  const calculateAlpha0 = (h0, h1, r) => {
-    if (!h0 || !h1 || !r || h0 <= h1 || r <= 0) return "";
-    return (Math.acos(1 - (h0 - h1) / r) * (180 / Math.PI)).toFixed(2);
-  };
+const calculateAlpha0 = (h0, h1, dw) => {
+  if (!h0 || !h1 || !dw || h0 <= h1 || dw <= 0) return "";
+  return (Math.acos(1 - (h0 - h1) / (dw)) * (180 / Math.PI)).toFixed(2);
+};
 
   const calculatep_ = (A0, A1, R, deltaH, n) => {
     const p = Math.log(A0 / A1);
@@ -52,12 +52,12 @@ function App() {
     return (p * vc / Math.sqrt(R * deltaH)).toFixed(2);
   };
 
-  const calculateKfm = (h0, b0, h1, b1, r, n) => {
-    if (!h0 || !b0 || !h1 || !b1 || !r || h0 <= h1 || r <= h1) return "";
+  const calculateKfm = (h0, b0, h1, b1, dN, n) => {
+    if (!h0 || !b0 || !h1 || !b1 || !dN || h0 <= h1 || dN <= h1) return "";
 
     const A0 = h0 * b0;
     const A1 = h1 * b1;
-    const dw = r - h1;
+    const dw = dN - h1; 
     const R = dw / 2;
     const deltaH = h0 - h1;
 
@@ -66,62 +66,92 @@ function App() {
     const p_ = calculatep_(A0, A1, R, deltaH, n);
 
     return (
-      k0 *
-      Math.exp(M1 * T) *
-      Math.pow(p_, M2 + M5 * T) *
-      Math.pow(p_, M3) *
-      Math.exp(M4 * p_)
+        k0 *
+        Math.exp(M1 * T) *
+        Math.pow(p_, M2 + M5 * T) *
+        Math.pow(p_, M3) *
+        Math.exp(M4 * p_)
     ).toFixed(2);
-  };
-
-  const calculateForce = (bm, Kfm, R, deltaH, h0, h1) => {
-    if (!bm || !Kfm || !R || !deltaH || !h0 || !h1) return "";
-
-    // Calculate eh
-    const eh = (h0 - h1) / h0;
-
-    // Calculate BN
-    const BN = Math.sqrt((1 - eh) / eh) *
-     Math.tan(0.5 * Math.sqrt(h1 / R) *
-     Math.log(1 - eh)) + 0.5 *
-     Math.atan(Math.sqrt(eh / (1 - eh)));
-
-    // Calculate Qf
-    const Qf = 2 * 
-    Math.sqrt((1 - eh) / eh) * 
-    Math.atan(Math.sqrt(eh / (1 - eh))) - 
-    1 + Math.sqrt(R / h1) * 
-    Math.sqrt((1 - eh) / eh) * 
-    Math.log(Math.sqrt(1 - eh) / 
-    (1 - eh * (1 - Math.pow(BN, 2))));
-
-    return (bm * Kfm * Math.sqrt(R * deltaH) * Qf).toFixed(2);
 };
 
 
-  const updateDependentValues = (index, updatedPasses) => {
-    const currentPass = updatedPasses[index];
-    const { h0, h1, b0, r, n } = currentPass;
+const calculateForce = (bm, Kfm, R, deltaH, h0, h1) => {
+  if (!bm || !Kfm || !R || !deltaH || !h0 || !h1) return "";
 
-    if (h0 && h1 && b0 && r && h0 > h1) {
-      const b1 = calculateB1(parseFloat(b0), parseFloat(h0), parseFloat(h1), parseFloat(r));
-      const alpha0 = calculateAlpha0(parseFloat(h0), parseFloat(h1), parseFloat(r));
+  // Calculate eh
+  const eh = (h0 - h1) / h0;
 
-      const bm = (parseFloat(b0) + parseFloat(b1)) / 2;
-      const dw = r - h1;
+  // Calculate BN
+  const BN = Math.sqrt((1 - eh) / eh) *
+   Math.tan(0.5 * Math.sqrt(h1 / R) *
+   Math.log(1 - eh)) + 0.5 *
+   Math.atan(Math.sqrt(eh / (1 - eh)));
+
+  // Calculate Qf
+  const Qf = 2 * 
+  Math.sqrt((1 - eh) / eh) * 
+  Math.atan(Math.sqrt(eh / (1 - eh))) - 
+  1 + Math.sqrt(R / h1) * 
+  Math.sqrt((1 - eh) / eh) * 
+  Math.log(Math.sqrt(1 - eh) / 
+  (1 - eh * (1 - Math.pow(BN, 2))));
+
+  return (bm * Kfm * Math.sqrt(R * deltaH) * Qf);
+};
+
+
+const updateDependentValues = (index, updatedPasses) => {
+  const currentPass = updatedPasses[index];
+  const { h0, h1, b0, dN, n } = currentPass;
+
+  if (h0 && h1 && b0 && dN && h0 > h1) {
+      const dw = dN - h1; 
       const R = dw / 2;
+      const b1 = calculateB1(parseFloat(b0), parseFloat(h0), parseFloat(h1), parseFloat(R));
+      const alpha0 = calculateAlpha0(parseFloat(h0), parseFloat(h1), parseFloat(dw));
+      const bm = (parseFloat(b0) + parseFloat(b1)) / 2;
       const deltaH = h0 - h1;
 
-      const Kfm = calculateKfm(parseFloat(h0), parseFloat(b0), parseFloat(h1), parseFloat(b1), parseFloat(r), n);
-      const F = calculateForce(parseFloat(bm), parseFloat(Kfm), parseFloat(R), parseFloat(deltaH), parseFloat(h0), parseFloat(h1));
+      const Kfm = calculateKfm(
+          parseFloat(h0),
+          parseFloat(b0),
+          parseFloat(h1),
+          parseFloat(b1),
+          parseFloat(dN), 
+          n
+      );
 
-      updatedPasses[index] = { ...currentPass, b1, alpha0, Kfm, F, p_: calculatep_(h0 * b0, h1 * b1, R, deltaH, n) };
-    } else {
-      updatedPasses[index] = { ...currentPass, b1: "", alpha0: "", Kfm: "", p_: "", F: "" };
-    }
+      const F = calculateForce(
+          parseFloat(bm),
+          parseFloat(Kfm),
+          parseFloat(R),
+          parseFloat(deltaH),
+          parseFloat(h0),
+          parseFloat(h1)
+      );
 
-    return updatedPasses;
-  };
+      updatedPasses[index] = {
+          ...currentPass,
+          b1,
+          alpha0,
+          Kfm,
+          F,
+          p_: calculatep_(h0 * b0, h1 * b1, R, deltaH, n),
+      };
+  } else {
+      updatedPasses[index] = {
+          ...currentPass,
+          b1: "",
+          alpha0: "",
+          Kfm: "",
+          p_: "",
+          F: "",
+      };
+  }
+
+  return updatedPasses;
+};
+
 
   const handleCellChange = (value, index, column) => {
     const updatedPasses = [...passes];
@@ -147,14 +177,12 @@ function App() {
       const prev = updatedPasses[i - 1];
       updatedPasses[i].h0 = prev.h1 || "";
       updatedPasses[i].b0 = prev.b1 || "";
-      updatedPasses[i].r = prev.r || "";
       updateDependentValues(i, updatedPasses);
     }
 
     setPasses(updatedPasses);
   };
 
-  // Handle rotation
   const handleRotation = (index) => {
     const updatedPasses = [...passes];
     const currentPass = updatedPasses[index];
@@ -181,7 +209,7 @@ function App() {
       b0: lastPass.b1 || "",
       h1: "",
       b1: "",
-      r: lastPass.r || "",
+      dN: lastPass.dN || "",
       n: lastPass.n ||"",
       alpha0: "",
       Kfm: "",
@@ -204,6 +232,7 @@ function App() {
     <div>
       <h1>Pass Schedule Simulation Tool</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
+      <div className="table-container">
       <table border="1">
         <thead>
           <tr>
@@ -212,9 +241,10 @@ function App() {
             <th>H0</th>
             <th>B0</th>
             <th>H1</th>
-            <th>Radius (r)</th>
+            <th>dN</th>
             <th>n</th>
             <th>B1</th>
+            <th>B1 / H1</th>
             <th>Alpha0</th>
             <th>p.</th> 
             <th>Kfm</th>
@@ -229,16 +259,17 @@ function App() {
                 <input type="checkbox" checked={pass.rotated || false} onChange={() => (index === 0 ? null : handleRotation(index))} disabled={index === 0} />
               </td>
               <td>{pass.pass}</td>
-              {["h0", "b0", "h1", "r", "n"].map((col) => (
+              {["h0", "b0", "h1", "dN", "n"].map((col) => (
                 <td key={col}>
                   <input type="number" value={pass[col]} onChange={(e) => handleCellChange(e.target.value, index, col)} />
                 </td>
               ))}
               <td>{pass.b1}</td>
+              <td>{(pass.b1 / pass.h1).toFixed(2)}</td>
               <td>{pass.alpha0}</td>
               <td>{pass.p_}</td>
               <td>{pass.Kfm}</td>
-              <td>{pass.F}</td>
+              <td>{(pass.F / 1000).toFixed(2)}</td>
               <td>
                 <button className="removepass" onClick={() => removePass(index)} disabled={index === 0}>
                   <img src=".\imgs\trash.png" alt="remove button" />
@@ -248,6 +279,7 @@ function App() {
           ))}
         </tbody>
       </table>
+      </div>
       <button onClick={addPass} style={{ marginTop: "10px" }}>Add Pass</button>
     </div>
   );

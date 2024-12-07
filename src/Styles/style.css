@@ -1,3 +1,4 @@
+/* General reset and container styles */
 * {
   margin: 0;
   padding: 0;
@@ -24,15 +25,21 @@ div[style*="color: red"] {
   text-align: center;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
+.table-container {
+  overflow-x: auto; /* Enable horizontal scrolling */
   margin-bottom: 20px;
+  border: 1px solid #ddd; /* Optional border for the container */
+}
+
+table {
+  min-width: 1000px; /* Set a minimum width to allow horizontal scrolling */
+  border-collapse: collapse;
 }
 table th, table td {
-  padding: 10px;
+  padding: 15px; /* Increase padding for more space in each cell */
   text-align: center;
   border: 1px solid #ddd;
+  white-space: nowrap; /* Prevent text from wrapping in cells */
 }
 table th {
   background-color: #f4f4f4;

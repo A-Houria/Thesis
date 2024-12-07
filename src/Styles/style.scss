@@ -1,8 +1,9 @@
-*{
+/* General reset and container styles */
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  transition: all .3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 // Main container
@@ -27,23 +28,30 @@ div[style*="color: red"] {
   text-align: center;
 }
 
+// Scrollable table container
+.table-container {
+  overflow-x: auto; /* Enable horizontal scrolling */
+  margin-bottom: 20px;
+  border: 1px solid #ddd; /* Optional border for the container */
+}
+
 // Table styling
 table {
-  width: 100%;
+  min-width: 1000px; /* Set a minimum width to allow horizontal scrolling */
   border-collapse: collapse;
-  margin-bottom: 20px;
-  
+
   th, td {
-    padding: 10px;
+    padding: 15px; /* Increase padding for more space in each cell */
     text-align: center;
     border: 1px solid #ddd;
+    white-space: nowrap; /* Prevent text from wrapping in cells */
   }
   
   th {
     background-color: #f4f4f4;
     font-weight: bold;
   }
-  
+
   tr:nth-child(even) {
     background-color: #f9f9f9;
   }
@@ -55,7 +63,7 @@ table {
 
 // Table input styling
 input[type="number"] {
-  width: 80%;
+  width: 80%; 
   padding: 8px;
   margin: 5px;
   border: 1px solid #ccc;
@@ -80,14 +88,15 @@ button {
   font-size: 14px;
   cursor: pointer;
 
-  img{
+  img {
     max-width: 25px;
   }
 
-  &.removepass{
+  &.removepass {
     padding: 8px 12px;
     margin: 5px;
-    &:hover{
+
+    &:hover {
       background-color: red;
     }
   }
@@ -100,7 +109,6 @@ button {
     outline: none;
   }
 }
-
 
 // Style for the container around buttons
 button + button {
