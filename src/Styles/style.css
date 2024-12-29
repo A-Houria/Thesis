@@ -1,4 +1,3 @@
-/* General reset and container styles */
 * {
   margin: 0;
   padding: 0;
@@ -6,15 +5,32 @@
   transition: all 0.3s ease-in-out;
 }
 
+.nav {
+  width: 95%;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+.nav img {
+  max-height: 150px;
+  background-color: white;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
 div {
   font-family: Arial, sans-serif;
-  margin: 20px;
+  padding: 20px;
+  background-color: #003b7a;
 }
 
 h1 {
   text-align: center;
   font-size: 2rem;
-  color: #333;
+  color: white;
   margin-bottom: 20px;
 }
 
@@ -26,20 +42,20 @@ div[style*="color: red"] {
 }
 
 .table-container {
-  overflow-x: auto; /* Enable horizontal scrolling */
+  overflow-x: auto;
   margin-bottom: 20px;
-  border: 1px solid #ddd; /* Optional border for the container */
+  background: white;
 }
 
 table {
-  min-width: 1000px; /* Set a minimum width to allow horizontal scrolling */
+  min-width: 100%;
   border-collapse: collapse;
 }
 table th, table td {
-  padding: 15px; /* Increase padding for more space in each cell */
+  padding: 15px;
   text-align: center;
   border: 1px solid #ddd;
-  white-space: nowrap; /* Prevent text from wrapping in cells */
+  white-space: nowrap;
 }
 table th {
   background-color: #f4f4f4;
@@ -68,13 +84,14 @@ input[type=number]:focus {
 
 button {
   padding: 20px 25px;
-  margin: 5px;
+  margin: 20px;
   border: none;
   border-radius: 4px;
   background-color: #f2f2f2;
   color: black;
   font-size: 14px;
   cursor: pointer;
+  letter-spacing: 2px;
 }
 button img {
   max-width: 25px;
@@ -84,7 +101,21 @@ button.removepass {
   margin: 5px;
 }
 button.removepass:hover {
+  background-color: rgb(0, 255, 0);
+}
+button.removepass:disabled {
+  cursor: not-allowed;
+}
+button.removepass:disabled:hover {
   background-color: red;
+  color: white;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+button:disabled:hover {
+  background-color: red;
+  color: white;
 }
 button:hover {
   background-color: rgb(0, 255, 0);

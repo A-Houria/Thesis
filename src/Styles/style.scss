@@ -1,22 +1,37 @@
-/* General reset and container styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   transition: all 0.3s ease-in-out;
+  
+}
+
+.nav{
+  width: 95%;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  img{
+    max-height: 150px;
+    background-color: white;
+    user-select: none;
+  }
 }
 
 // Main container
 div {
   font-family: Arial, sans-serif;
-  margin: 20px;
+  padding: 20px;
+  background-color: #003b7a;
 }
 
 // Title
 h1 {
   text-align: center;
   font-size: 2rem;
-  color: #333;
+  color: white;
   margin-bottom: 20px;
 }
 
@@ -30,21 +45,21 @@ div[style*="color: red"] {
 
 // Scrollable table container
 .table-container {
-  overflow-x: auto; /* Enable horizontal scrolling */
+  overflow-x: auto; 
   margin-bottom: 20px;
-  border: 1px solid #ddd; /* Optional border for the container */
+  background: white;
 }
 
 // Table styling
 table {
-  min-width: 1000px; /* Set a minimum width to allow horizontal scrolling */
+  min-width: 100%; 
   border-collapse: collapse;
 
   th, td {
-    padding: 15px; /* Increase padding for more space in each cell */
+    padding: 15px; 
     text-align: center;
     border: 1px solid #ddd;
-    white-space: nowrap; /* Prevent text from wrapping in cells */
+    white-space: nowrap; 
   }
   
   th {
@@ -80,13 +95,14 @@ input[type="number"] {
 // Button styling
 button {
   padding: 20px 25px;
-  margin: 5px;
+  margin: 20px;
   border: none;
   border-radius: 4px;
   background-color: #f2f2f2;
   color: black;
   font-size: 14px;
   cursor: pointer;
+  letter-spacing: 2px;
 
   img {
     max-width: 25px;
@@ -97,7 +113,22 @@ button {
     margin: 5px;
 
     &:hover {
+      background-color: rgb(0, 255, 0);
+    }
+    &:disabled{
+      cursor:not-allowed;
+    &:hover{
       background-color: red;
+      color: white;
+    }
+    }
+  }
+
+  &:disabled{
+    cursor:not-allowed;
+    &:hover{
+      background-color: red;
+      color: white;
     }
   }
 

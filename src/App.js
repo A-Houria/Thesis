@@ -153,35 +153,35 @@ const updateDependentValues = (index, updatedPasses) => {
 };
 
 
-  const handleCellChange = (value, index, column) => {
-    const updatedPasses = [...passes];
-    const currentPass = updatedPasses[index];
-    const prevPass = updatedPasses[index - 1] || null;
+const handleCellChange = (value, index, column) => {
+  const numericValue = Number(value); 
+  const updatedPasses = [...passes];
+  const currentPass = updatedPasses[index];
+  const prevPass = updatedPasses[index - 1] || null;
 
-    if (column === "h0" && index > 0 && value > prevPass.h1) {
-      setError("H0 cannot be greater than the previous pass's H1");
-      return;
-    }
+  if (column === "h0" && index > 0 && numericValue > prevPass.h1) {
+    setError("H0 cannot be greater than the previous pass's H1");
+    return;
+  }
 
-    if (column === "h1" && value > currentPass.h0) {
-      setError("H1 cannot be greater than H0");
-      return;
-    }
+  if (column === "h1" && numericValue > currentPass.h0) {
+    setError("H1 cannot be greater than H0");
+    return;
+  }
 
-    setError("");
-    currentPass[column] = value;
-    updateDependentValues(index, updatedPasses);
+  setError("");
+  currentPass[column] = numericValue; 
+  updateDependentValues(index, updatedPasses);
 
-    // Update subsequent passes
-    for (let i = index + 1; i < updatedPasses.length; i++) {
-      const prev = updatedPasses[i - 1];
-      updatedPasses[i].h0 = prev.h1 || "";
-      updatedPasses[i].b0 = prev.b1 || "";
-      updateDependentValues(i, updatedPasses);
-    }
+  for (let i = index + 1; i < updatedPasses.length; i++) {
+    const prev = updatedPasses[i - 1];
+    updatedPasses[i].h0 = prev.h1 || "";
+    updatedPasses[i].b0 = prev.b1 || "";
+    updateDependentValues(i, updatedPasses);
+  }
 
-    setPasses(updatedPasses);
-  };
+  setPasses(updatedPasses);
+};
 
   const handleRotation = (index) => {
     const updatedPasses = [...passes];
@@ -220,17 +220,22 @@ const updateDependentValues = (index, updatedPasses) => {
 
     const updatedPasses = [...passes, newPass];
     setPasses(updatedPasses);
+    console.log(passes.length);
   };
 
   const removePass = (index) => {
-    if (index === 0) return;
+    console.log(passes.length);
+    if (passes.length <= 1) return;
     const updatedPasses = passes.filter((_, i) => i !== index).map((pass, i) => ({ ...pass, pass: i + 1 }));
     setPasses(updatedPasses);
   };
 
   return (
     <div>
+      <div className="nav">
+      <img src=".\imgs\UDE.svg" alt="Logo" />
       <h1>Pass Schedule Simulation Tool</h1>
+      </div>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <div className="table-container">
       <table border="1">
@@ -271,7 +276,7 @@ const updateDependentValues = (index, updatedPasses) => {
               <td>{pass.Kfm}</td>
               <td>{(pass.F / 1000).toFixed(2)}</td>
               <td>
-                <button className="removepass" onClick={() => removePass(index)} disabled={index === 0}>
+                <button className="removepass" onClick={() => removePass(index)} disabled={passes.length <= 1}>
                   <img src=".\imgs\trash.png" alt="remove button" />
                 </button>
               </td>
@@ -280,7 +285,7 @@ const updateDependentValues = (index, updatedPasses) => {
         </tbody>
       </table>
       </div>
-      <button onClick={addPass} style={{ marginTop: "10px" }}>Add Pass</button>
+      <button onClick={addPass} style={{ marginTop: "10px" }} disabled={passes.length > 49}>Add Pass</button>
     </div>
   );
 }
