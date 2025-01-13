@@ -1,4 +1,18 @@
 import React, { useState } from "react";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+
+// Register Chart.js components
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 // Constants for calculations
 const k0 = 4558.90;
@@ -286,6 +300,53 @@ const handleCellChange = (value, index, column) => {
       </table>
       </div>
       <button onClick={addPass} style={{ marginTop: "10px" }} disabled={passes.length > 49}>Add Pass</button>
+      <div className="graph" style={{ background: "white",margin: "20px 0px 0px 0px", padding: "20px" }}>
+        <Line
+          data={{
+            labels: passes.map((pass) => pass.h0 || 0), // H0 values for the x-axis
+            datasets: [
+              {
+                label: "B0 vs H0",
+                data: passes.map((pass) => ({ x: pass.h0 || 0, y: pass.b0 || 0 })), // Plot H0 (x) against B0 (y)
+                borderColor: "#003b7a",
+                backgroundColor: "white",
+                showLine: true, // Show a connecting line between points
+                tension: 0, // Optional for smoothing
+              },
+            ],
+          }}
+          options={{
+            responsive: true,
+            plugins: {
+              legend: {
+                position: "top",
+              },
+              title: {
+                display: true,
+                text: "B0 (y-axis) vs H0 (x-axis)",
+              },
+            },
+            scales: {
+              x: {
+                type: "linear",
+                title: {
+                  display: true,
+                  text: "H0",
+                },
+                reverse: "true",
+              },
+              y: {
+                type: "linear",
+                title: {
+                  display: true,
+                  text: "B0",
+                },
+                position: "right",
+              },
+            },
+          }}
+        />
+      </div>
     </div>
   );
 }
