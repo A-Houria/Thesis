@@ -303,15 +303,15 @@ const handleCellChange = (value, index, column) => {
       <div className="graph" style={{ background: "white",margin: "20px 0px 0px 0px", padding: "20px" }}>
         <Line
           data={{
-            labels: passes.map((pass) => pass.h0 || 0), // H0 values for the x-axis
+            labels: passes.map((pass) => pass.h0 || 0), 
             datasets: [
               {
                 label: "B0 vs H0",
-                data: passes.map((pass) => ({ x: pass.h0 || 0, y: pass.b0 || 0 })), // Plot H0 (x) against B0 (y)
+                data: passes.map((pass) => ({ x: pass.h0 || 0, y: pass.b0 || 0 })), 
                 borderColor: "#003b7a",
                 backgroundColor: "white",
-                showLine: true, // Show a connecting line between points
-                tension: 0, // Optional for smoothing
+                showLine: true, 
+                tension: 0, 
               },
             ],
           }}
