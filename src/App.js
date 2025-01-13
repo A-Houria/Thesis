@@ -300,7 +300,7 @@ const handleCellChange = (value, index, column) => {
       </table>
       </div>
       <button onClick={addPass} style={{ marginTop: "10px" }} disabled={passes.length > 49}>Add Pass</button>
-      <div className="graph" style={{ background: "white",margin: "20px 0px 0px 0px", padding: "20px" }}>
+      <div className="graph" style={{ background: "white", margin: "20px 0px 0px 0px", padding: "20px" }}>
         <Line
           data={{
             labels: passes.map((pass) => pass.h0 || 0), 
