@@ -303,11 +303,11 @@ const handleCellChange = (value, index, column) => {
       <div className="diagram" style={{ background: "white", margin: "20px 0px 0px 0px", padding: "20px" }}>
         <Line
           data={{
-            labels: passes.map((pass) => pass.h0 || 0), 
+            labels: passes.map((pass) => pass.h1 || 0), 
             datasets: [
               {
-                label: "B0 vs H0",
-                data: passes.map((pass) => ({ x: pass.h0 || 0, y: pass.b0 || 0 })), 
+                label: "B1 vs H1",
+                data: passes.map((pass) => ({ x: pass.h1 || 0, y: pass.b1 || 0 })), 
                 borderColor: "#003b7a",
                 backgroundColor: "white",
                 showLine: true, 
@@ -323,7 +323,7 @@ const handleCellChange = (value, index, column) => {
               },
               title: {
                 display: true,
-                text: "B0 (y-axis) vs H0 (x-axis)",
+                text: "B1 (y-axis) vs H1 (x-axis)",
               },
             },
             scales: {
@@ -331,7 +331,7 @@ const handleCellChange = (value, index, column) => {
                 type: "linear",
                 title: {
                   display: true,
-                  text: "H0",
+                  text: "H1",
                 },
                 reverse: "true",
               },
@@ -339,7 +339,7 @@ const handleCellChange = (value, index, column) => {
                 type: "linear",
                 title: {
                   display: true,
-                  text: "B0",
+                  text: "B1",
                 },
                 position: "right",
               },

@@ -20,6 +20,16 @@
      -moz-user-select: none;
           user-select: none;
 }
+@media screen and (max-width: 820px) {
+  .nav img {
+    margin: 30px 0px;
+  }
+}
+@media screen and (max-width: 820px) {
+  .nav {
+    flex-direction: column;
+  }
+}
 
 div {
   font-family: Arial, sans-serif;
@@ -70,6 +80,7 @@ table tr:hover {
 
 input[type=number] {
   width: 80%;
+  min-width: 75px;
   padding: 8px;
   margin: 5px;
   border: 1px solid #ccc;

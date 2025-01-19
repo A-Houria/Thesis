@@ -19,6 +19,12 @@
     max-height: 150px;
     background-color: white;
     user-select: none;
+    @media screen and (max-width: "820px") {
+      margin: 30px 0px;
+    }
+  }
+  @media screen and (max-width: "820px") {
+    flex-direction: column;
   }
 }
 
@@ -81,6 +87,7 @@ table {
 // Table input styling
 input[type="number"] {
   width: 80%; 
+  min-width: 75px;
   padding: 8px;
   margin: 5px;
   border: 1px solid #ccc;
